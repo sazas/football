@@ -12,6 +12,7 @@ third_party/gfootball_engine/cmake_install.cmake
 third_party/gfootball_engine/gameplayfootball
 footballenv/
 football-env/
+football-env2/
 cmake-build-debug/
 .idea
 .vs

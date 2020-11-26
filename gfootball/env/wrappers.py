@@ -96,7 +96,7 @@ class PeriodicDumpWriter(gym.Wrapper):
 class Simple115StateWrapper(gym.ObservationWrapper):
   """A wrapper that converts an observation to 115-features state."""
 
-  def __init__(self, env, fixed_positions=False):
+  def __init__(self, env, fixed_positions=False, add_relative=False):
     """Initializes the wrapper.
 
     Args:
@@ -106,17 +106,18 @@ class Simple115StateWrapper(gym.ObservationWrapper):
     """
     gym.ObservationWrapper.__init__(self, env)
     action_shape = np.shape(self.env.action_space)
-    shape = (action_shape[0] if len(action_shape) else 1, 115)
+    shape = (action_shape[0] if len(action_shape) else 1, 115 if not add_relative else 115+46)
     self.observation_space = gym.spaces.Box(
         low=-np.inf, high=np.inf, shape=shape, dtype=np.float32)
     self._fixed_positions = fixed_positions
+    self._add_relative = add_relative
 
   def observation(self, observation):
     """Converts an observation into simple115 (or simple115v2) format."""
-    return Simple115StateWrapper.convert_observation(observation, self._fixed_positions)
+    return Simple115StateWrapper.convert_observation(observation, self._fixed_positions, self._add_relative)
 
   @staticmethod
-  def convert_observation(observation, fixed_positions):
+  def convert_observation(observation, fixed_positions, add_relative):
     """Converts an observation into simple115 (or simple115v2) format.
 
     Args:
@@ -164,8 +165,21 @@ class Simple115StateWrapper(gym.ObservationWrapper):
       if len(o) < 88:
         o.extend([-1] * (88 - len(o)))
 
+      active_position = obs['left_team'][obs['active']]
+      if add_relative:
+        # +44 vals of relative positions
+        for i, name in enumerate(['left_team', 'right_team']):
+          o.extend(do_flatten(obs[name] - active_position))
+          # If there were less than 11vs11 players we backfill missing values
+          # with -1.
+          if len(o) < 88 + (i + 1) * 22:
+            o.extend([-1] * (88 + (i + 1) * 22 - len(o)))
+
       # ball position
       o.extend(obs['ball'])
+      if add_relative:
+        # +2 relative
+        o.extend(obs['ball'][0:2] - active_position)
       # ball direction
       o.extend(obs['ball_direction'])
       # one hot encoding of which team owns the ball

@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "football-env/bin/python",
+    "jupyter.jupyterServerType": "remote"
+}

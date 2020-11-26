@@ -31,34 +31,31 @@ from gfootball.examples import models
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string('level', 'academy_empty_goal_close',
+flags.DEFINE_string('level', '11_vs_11_kaggle',
                     'Defines type of problem being solved')
-flags.DEFINE_enum('state', 'extracted_stacked', ['extracted',
-                                                 'extracted_stacked'],
-                  'Observation to be used for training.')
-flags.DEFINE_enum('reward_experiment', 'scoring',
+flags.DEFINE_enum('reward_experiment', 'scoring,checkpoints',
                   ['scoring', 'scoring,checkpoints'],
                   'Reward to be used for training.')
-flags.DEFINE_enum('policy', 'cnn', ['cnn', 'lstm', 'mlp', 'impala_cnn',
+flags.DEFINE_enum('policy', 'mlp', ['cnn', 'lstm', 'mlp', 'impala_cnn',
                                     'gfootball_impala_cnn'],
                   'Policy architecture')
-flags.DEFINE_integer('num_timesteps', int(2e6),
+flags.DEFINE_integer('num_timesteps', int(2e9),
                      'Number of timesteps to run for.')
 flags.DEFINE_integer('num_envs', 8,
                      'Number of environments to run in parallel.')
-flags.DEFINE_integer('nsteps', 128, 'Number of environment steps per epoch; '
+flags.DEFINE_integer('nsteps', 512, 'Number of environment steps per epoch; '
                      'batch size is nsteps * nenv')
-flags.DEFINE_integer('noptepochs', 4, 'Number of updates per epoch.')
+flags.DEFINE_integer('noptepochs', 8, 'Number of updates per epoch.')
 flags.DEFINE_integer('nminibatches', 8,
                      'Number of minibatches to split one epoch to.')
 flags.DEFINE_integer('save_interval', 100,
                      'How frequently checkpoints are saved.')
 flags.DEFINE_integer('seed', 0, 'Random seed.')
-flags.DEFINE_float('lr', 0.00008, 'Learning rate')
-flags.DEFINE_float('ent_coef', 0.01, 'Entropy coeficient')
+flags.DEFINE_float('lr', 1.6e-5, 'Learning rate')
+flags.DEFINE_float('ent_coef', 0.003, 'Entropy coeficient')
 flags.DEFINE_float('gamma', 0.993, 'Discount factor')
-flags.DEFINE_float('cliprange', 0.27, 'Clip range')
-flags.DEFINE_float('max_grad_norm', 0.5, 'Max gradient norm (clipping)')
+flags.DEFINE_float('cliprange', 0.08, 'Clip range')
+flags.DEFINE_float('max_grad_norm', 0.64, 'Max gradient norm (clipping)')
 flags.DEFINE_bool('render', False, 'If True, environment rendering is enabled.')
 flags.DEFINE_bool('dump_full_episodes', False,
                   'If True, trace is dumped after every episode.')
@@ -70,7 +67,7 @@ flags.DEFINE_string('load_path', None, 'Path to load initial checkpoint from.')
 def create_single_football_env(iprocess):
   """Creates gfootball environment."""
   env = football_env.create_environment(
-      env_name=FLAGS.level, stacked=('stacked' in FLAGS.state),
+      env_name=FLAGS.level, representation='simple115v3', stacked=False,
       rewards=FLAGS.reward_experiment,
       logdir=logger.get_dir(),
       write_goal_dumps=FLAGS.dump_scores and (iprocess == 0),
@@ -100,6 +97,8 @@ def train(_):
   config.gpu_options.allow_growth = True
   tf.Session(config=config).__enter__()
 
+  mlp_kwargs = {'num_layers':5, 'num_hidden':128}
+  FLAGS.load_path = "/home/alex/Dropbox/projects/python/kaggle/football/checkpoints/openai-2020-11-25-22-07-25-292207/checkpoints/00400"
   ppo2.learn(network=FLAGS.policy,
              total_timesteps=FLAGS.num_timesteps,
              env=vec_env,
@@ -114,7 +113,8 @@ def train(_):
              log_interval=1,
              save_interval=FLAGS.save_interval,
              cliprange=FLAGS.cliprange,
-             load_path=FLAGS.load_path)
+             load_path=FLAGS.load_path,
+             **mlp_kwargs)
 
 
 if __name__ == '__main__':
