@@ -14,5 +14,5 @@ python3 -u -m gfootball.examples.run_ppo2 \
   --noptepochs 8 \
   --nminibatches 8 \
   --nsteps 512 \
-  --load_path "/home/alex/football/checkpoints/openai-2020-11-26-12-35-02-877222/checkpoints/02600"\
+  --load_path "/home/alex/football/checkpoints/openai-2020-11-26-12-35-02-877222/checkpoints/03200"\
   "$@"
