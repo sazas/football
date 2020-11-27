@@ -39,7 +39,7 @@ flags.DEFINE_enum('reward_experiment', 'scoring,checkpoints',
 flags.DEFINE_enum('policy', 'mlp', ['cnn', 'lstm', 'mlp', 'impala_cnn',
                                     'gfootball_impala_cnn'],
                   'Policy architecture')
-flags.DEFINE_integer('num_timesteps', int(2e9),
+flags.DEFINE_integer('num_timesteps', int(5e9),
                      'Number of timesteps to run for.')
 flags.DEFINE_integer('num_envs', 8,
                      'Number of environments to run in parallel.')
@@ -98,7 +98,6 @@ def train(_):
   tf.Session(config=config).__enter__()
 
   mlp_kwargs = {'num_layers':5, 'num_hidden':128}
-  FLAGS.load_path = "/home/alex/Dropbox/projects/python/kaggle/football/checkpoints/openai-2020-11-25-22-07-25-292207/checkpoints/00400"
   ppo2.learn(network=FLAGS.policy,
              total_timesteps=FLAGS.num_timesteps,
              env=vec_env,

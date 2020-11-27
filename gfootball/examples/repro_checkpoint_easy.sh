@@ -7,11 +7,12 @@ python3 -u -m gfootball.examples.run_ppo2 \
   --cliprange 0.08 \
   --gamma 0.993 \
   --ent_coef 0.003 \
-  --num_timesteps 50000000 \
+  --num_timesteps 500000000 \
   --max_grad_norm 0.64 \
   --lr 1.6e-5 \
   --num_envs 16 \
   --noptepochs 8 \
   --nminibatches 8 \
   --nsteps 512 \
+  --load_path "/home/alex/football/checkpoints/openai-2020-11-26-12-35-02-877222/checkpoints/02600"\
   "$@"
