@@ -10,9 +10,69 @@ from __future__ import print_function
 from gfootball.env import football_action_set
 from gfootball.env import player_base
 import numpy as np
-from kaggle_environments.envs.football.helpers import *
 import math
 import random
+from enum import Enum
+from typing import *
+
+
+class Action(Enum):
+    Idle = 0
+    Left = 1
+    TopLeft = 2
+    Top = 3
+    TopRight = 4
+    Right = 5
+    BottomRight = 6
+    Bottom = 7
+    BottomLeft = 8
+    LongPass= 9
+    HighPass = 10
+    ShortPass = 11
+    Shot = 12
+    Sprint = 13
+    ReleaseDirection = 14
+    ReleaseSprint = 15
+    Slide = 16
+    Dribble = 17
+    ReleaseDribble = 18
+
+
+sticky_index_to_action = [
+    Action.Left,
+    Action.TopLeft,
+    Action.Top,
+    Action.TopRight,
+    Action.Right,
+    Action.BottomRight,
+    Action.Bottom,
+    Action.BottomLeft,
+    Action.Sprint,
+    Action.Dribble
+]
+
+
+class PlayerRole(Enum):
+    GoalKeeper = 0
+    CenterBack = 1
+    LeftBack = 2
+    RightBack = 3
+    DefenceMidfield = 4
+    CentralMidfield = 5
+    LeftMidfield = 6
+    RIghtMidfield = 7
+    AttackMidfield = 8
+    CentralFront = 9
+
+
+class GameMode(Enum):
+    Normal = 0
+    KickOff = 1
+    GoalKick = 2
+    FreeKick = 3
+    Corner = 4
+    ThrowIn = 5
+    Penalty = 6
 
 def find_patterns(obs, player_x, player_y):
     """ find list of appropriate patterns in groups of memory patterns """
