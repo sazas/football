@@ -61,7 +61,10 @@ flags.DEFINE_bool('dump_full_episodes', False,
                   'If True, trace is dumped after every episode.')
 flags.DEFINE_bool('dump_scores', False,
                   'If True, sampled traces after scoring are dumped.')
-flags.DEFINE_string('load_path', None, 'Path to load initial checkpoint from.')
+flags.DEFINE_string('load_path', "/home/alex/Dropbox/projects/python/kaggle/football/checkpoints/openai-2020-11-26-12-35-02-877222/checkpoints/03600",
+                    'Path to load initial checkpoint from.')
+flags.DEFINE_string('opponent', 'GFootball_with_Memory_Patterns:right_players=1',
+                    'Opponent player to train against.')
 
 
 def create_single_football_env(iprocess):
@@ -69,6 +72,7 @@ def create_single_football_env(iprocess):
   env = football_env.create_environment(
       env_name=FLAGS.level, representation='simple115v3', stacked=False,
       rewards=FLAGS.reward_experiment,
+      extra_players=[FLAGS.opponent],
       logdir=logger.get_dir(),
       write_goal_dumps=FLAGS.dump_scores and (iprocess == 0),
       write_full_episode_dumps=FLAGS.dump_full_episodes and (iprocess == 0),

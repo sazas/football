@@ -165,11 +165,11 @@ class Simple115StateWrapper(gym.ObservationWrapper):
       if len(o) < 88:
         o.extend([-1] * (88 - len(o)))
 
-      active_position = obs['left_team'][obs['active']]
+      active_position = np.array(obs['left_team'][obs['active']])
       if add_relative:
         # +44 vals of relative positions
         for i, name in enumerate(['left_team', 'right_team']):
-          o.extend(do_flatten(obs[name] - active_position))
+          o.extend(do_flatten(np.array(obs[name]) - active_position))
           # If there were less than 11vs11 players we backfill missing values
           # with -1.
           if len(o) < 88 + (i + 1) * 22:
@@ -179,7 +179,7 @@ class Simple115StateWrapper(gym.ObservationWrapper):
       o.extend(obs['ball'])
       if add_relative:
         # +2 relative
-        o.extend(obs['ball'][0:2] - active_position)
+        o.extend(np.array(obs['ball'])[0:2] - active_position)
       # ball direction
       o.extend(obs['ball_direction'])
       # one hot encoding of which team owns the ball

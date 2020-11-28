@@ -11,7 +11,7 @@
             "justMyCode": false,
             "module": "gfootball.play_game",
             "args": [
-                "--players", "ppo2_cnn:left_players=1,policy=gfootball_impala_cnn,checkpoint=/home/alex/Dropbox/projects/python/kaggle/football/checkpoints/11_vs_11_easy_stochastic_v2",
+                "--players", "ppo2_mlp:left_players=1,policy=mlp,checkpoint=/home/alex/Dropbox/projects/python/kaggle/football/checkpoints/openai-2020-11-26-12-35-02-877222/checkpoints/03600;GFootball_with_Memory_Patterns:right_players=1",
                 "--level=11_vs_11_stochastic"
             ]
         },

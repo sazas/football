@@ -49,31 +49,6 @@ def gfootball_impala_cnn_network_fn(frame):
     return conv_out
 
 
-class PlayerBase(object):
-  """Base player class."""
-
-  def __init__(self):
-    self._num_left_controlled_players = 1
-    self._num_right_controlled_players = 0
-    self._can_play_right = False
-    
-  def num_controlled_left_players(self):
-    return self._num_left_controlled_players
-
-  def num_controlled_right_players(self):
-    return self._num_right_controlled_players
-
-  def num_controlled_players(self):
-    return (self._num_left_controlled_players +
-            self._num_right_controlled_players)
-
-  def reset(self):
-    pass
-
-  def can_play_right(self):
-    return self._can_play_right
-
-
 class Player(player_base.PlayerBase):
   """An agent loaded from PPO2 cnn model checkpoint."""
 
@@ -107,7 +82,7 @@ class Player(player_base.PlayerBase):
             )
     _load_variables(checkpoint_path, self._sess, prefix=self._player_prefix + '/')
     saver = tf.train.Saver()
-    saver.save(self._sess, "/home/alex/Dropbox/projects/python/kaggle/football/saved_models/11_vs_11_easy_stochastic_v2")
+    saver.save(self._sess, "/home/alex/Dropbox/projects/python/kaggle/football/saved_models/11_vs_11_easy_stochastic_v2/11_vs_11_easy_stochastic_v2")
 
   def __del__(self):
     self._sess.close()

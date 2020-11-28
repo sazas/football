@@ -1,24 +1,19 @@
 #!/bin/bash
 
 python3 -u -m gfootball.examples.run_ppo2 \
-  --level 11_vs_11_easy_stochastic \
+  --level 11_vs_11_kaggle \
   --reward_experiment scoring \
-  --policy impala_cnn \
-  --cliprange 0.115 \
-  --gamma 0.997 \
-  --ent_coef 0.00155 \
-  --num_timesteps 50000000 \
-  --max_grad_norm 0.76 \
-  --lr 0.00011879 \
-  --num_envs 16 \
-  --noptepochs 2 \
-  --nminibatches 4 \
+  --policy mlp \
+  --cliprange 0.08 \
+  --gamma 0.993 \
+  --ent_coef 0.003 \
+  --num_timesteps 500000000 \
+  --max_grad_norm 0.64 \
+  --lr 1.6e-5 \
+  --num_envs 8 \
+  --noptepochs 8 \
+  --nminibatches 8 \
   --nsteps 512 \
+  --load_path "/home/alex/football/checkpoints/openai-2020-11-26-12-35-02-877222/checkpoints/04200"\
+  --opponent "GFootball_with_Memory_Patterns:right_players=1"\
   "$@"
-
-# Needed to add: max_grad_norm
-
-# Good but unsettable defaults:
-# Optimizer: adam
-# Value-function coefficient is 0.5
-# GAE (lam): 0.95
